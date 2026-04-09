@@ -1,0 +1,50 @@
+<Server port="8005" shutdown="SHUTDOWN">
+
+  <Service name="Catalina">
+
+    <Connector port="8080"
+               protocol="org.apache.coyote.http11.Http11NioProtocol"
+               connectionTimeout="20000"
+               redirectPort="8443" />
+
+    <!-- 🔐 HTTPS + mTLS -->
+    <Connector port="8443"
+               protocol="org.apache.coyote.http11.Http11NioProtocol"
+               SSLEnabled="true"
+               maxThreads="150">
+
+        <SSLHostConfig
+            certificateVerification="required"
+            truststoreFile="conf/truststore.jks"
+            truststorePassword="changeit">
+
+            <Certificate
+                certificateKeystoreFile="conf/keystore.jks"
+                certificateKeystorePassword="changeit"
+                type="RSA" />
+
+        </SSLHostConfig>
+
+    </Connector>
+
+    <!-- 🔥 REQUIRED ENGINE (you were missing this part) -->
+    <Engine name="Catalina" defaultHost="localhost">
+
+      <Host name="localhost" appBase="webapps"
+            unpackWARs="true" autoDeploy="true">
+
+        <!-- OPTIONAL: remove access log to avoid NPE -->
+        <!--
+        <Valve className="org.apache.catalina.valves.AccessLogValve"
+               directory="logs"
+               prefix="localhost_access_log"
+               suffix=".txt"
+               pattern="%h %l %u %t &quot;%r&quot; %s %b" />
+        -->
+
+      </Host>
+
+    </Engine>
+
+  </Service>
+</Server>
